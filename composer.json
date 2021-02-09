@@ -1,6 +1,7 @@
 {
     "name": "lensmedia/symfony-kiyoh",
     "type": "symfony-bundle",
+    "version": "1.0.0",
     "authors": [
         {
             "name": "Jenne van der Meer",
@@ -14,5 +15,10 @@
         "symfony/config": "^5",
         "symfony/cache": "^5",
         "symfony/http-client": "^5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lens\\Bundle\\KiyohBundle\\": ""
+        }
     }
 }
