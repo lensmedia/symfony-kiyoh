@@ -3,7 +3,6 @@
 namespace Lens\Bundle\KiyohBundle\Statistics;
 
 use DateTime;
-use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
