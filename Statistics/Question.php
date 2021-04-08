@@ -4,11 +4,11 @@ namespace Lens\Bundle\KiyohBundle\Statistics;
 
 class Question
 {
-    public $group;
-    public $type;
+    public string $group;
+    public string $type;
 
-    public $question;
-    public $answer;
+    public string $question;
+    public bool|int|string $answer;
 
     public $order;
 

@@ -13,22 +13,19 @@ class Inviter
     const TYPE_JSON = 'json';
     const TYPE_URL = 'url';
 
-    private $http;
-    private $logger;
-    private $options;
-
     public function __construct(
-        HttpClientInterface $http,
-        LoggerInterface $logger,
-        array $options
+        private HttpClientInterface $http,
+        private LoggerInterface $logger,
+        private array $options
     ) {
-        $this->http = $http;
-        $this->logger = $logger;
-        $this->options = $options;
     }
 
-    public function invite(string $email, string $name = null, string $reference = null, string $locale = null): RequestContent
-    {
+    public function invite(
+        string $email,
+        string $name = null,
+        string $reference = null,
+        string $locale = null
+    ): RequestContent {
         $options = new RequestContent(
             array_merge($this->options, ['language' => $locale]),
             $email,
@@ -39,7 +36,7 @@ class Inviter
         return $this->request($options);
     }
 
-    private function request(RequestContent $requestContent)
+    private function request(RequestContent $requestContent): RequestContent
     {
         $type = $this->options['invites']['request_type'];
 
@@ -59,7 +56,7 @@ class Inviter
                 break;
 
             case self::TYPE_URL:
-                $requestOptions['query'] = (array) $requestContent;
+                $requestOptions['query'] = (array)$requestContent;
         }
 
         $response = $this->http->request($method, $this->getTargetUrl(), $requestOptions);
@@ -81,9 +78,9 @@ class Inviter
         }
     }
 
-    private function encode(RequestContent $requestOptions)
+    private function encode(RequestContent $requestOptions): bool|string
     {
-        $options = (array) $requestOptions;
+        $options = (array)$requestOptions;
 
         switch ($this->options['invites']['request_type']) {
             case self::TYPE_XML:
@@ -108,7 +105,7 @@ class Inviter
         }
     }
 
-    private function getTargetUrl()
+    private function getTargetUrl(): string
     {
         return $this->options['invites']['base_url'].'/v1/invite/external';
     }

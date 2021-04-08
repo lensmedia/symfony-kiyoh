@@ -12,18 +12,11 @@ class StatisticsRequest
     const CACHE_REVIEW_INDEX = 'lens_kiyoh.reviews';
     const CACHE_TTL_INDEX = 'lens_kiyoh.ttl';
 
-    private $cache;
-    private $http;
-    private $options;
-
     public function __construct(
-        CacheInterface $cache,
-        HttpClientInterface $http,
-        array $options
+        private CacheInterface $cache,
+        private HttpClientInterface $http,
+        private array $options
     ) {
-        $this->cache = $cache;
-        $this->http = $http;
-        $this->options = $options;
     }
 
     public function timeoutCacheItem()
@@ -75,7 +68,7 @@ class StatisticsRequest
         return $timeout->get();
     }
 
-    private function query()
+    private function query(): array
     {
         $target = $this->options['statistics']['base_url'].'/v1/review/feed.json';
 

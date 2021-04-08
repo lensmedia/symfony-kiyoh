@@ -6,29 +6,27 @@ use Lens\Bundle\KiyohBundle\Inviter\Inviter;
 use Lens\Bundle\KiyohBundle\Statistics\StatisticsRequest;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class LensKiyohExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-        // configuration
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // services
-        $loader = new YamlFileLoader(
+        $loader = new PhpFileLoader(
             $container,
             new FileLocator(__DIR__.'/../Resources/config')
         );
 
-        $loader->load('services.yaml');
+        $loader->load('services.php');
 
-        $invite = $container->getDefinition(Inviter::class);
-        $invite->replaceArgument(2, $config);
+        $container->getDefinition(Inviter::class)
+            ->replaceArgument(2, $config);
 
-        $statistics = $container->getDefinition(StatisticsRequest::class);
-        $statistics->replaceArgument(2, $config);
+        $container->getDefinition(StatisticsRequest::class)
+            ->replaceArgument(2, $config);
     }
 }

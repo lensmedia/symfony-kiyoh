@@ -4,12 +4,12 @@ namespace Lens\Bundle\KiyohBundle\Statistics;
 
 class Statistics
 {
-    public $rating;
-    public $votes;
-    public $recommended;
+    public float $rating;
+    public int $votes;
+    public float $recommended;
 
-    public $locationId;
-    public $locationName;
+    public int $locationId;
+    public string $locationName;
 
     public function __construct(array $response)
     {

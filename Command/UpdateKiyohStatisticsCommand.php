@@ -12,17 +12,16 @@ class UpdateKiyohStatisticsCommand extends Command
 {
     protected static $defaultName = 'lens:kiyoh:update';
 
-    private $statisticsRequest;
+    private StatisticsRequest $statisticsRequest;
 
-    public function __construct(
-        StatisticsRequest $statisticsRequest
-    ) {
+    public function __construct(StatisticsRequest $statisticsRequest)
+    {
         parent::__construct();
 
         $this->statisticsRequest = $statisticsRequest;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $timeout = $this->statisticsRequest->update();
 

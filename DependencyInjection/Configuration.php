@@ -3,12 +3,13 @@
 namespace Lens\Bundle\KiyohBundle\DependencyInjection;
 
 use Lens\Bundle\KiyohBundle\Inviter\Inviter;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('lens_kiyoh');
 
@@ -35,7 +36,7 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    public function getStatisticsNode()
+    public function getStatisticsNode(): NodeDefinition
     {
         $treeBuilder = new TreeBuilder('statistics');
 
@@ -56,7 +57,7 @@ class Configuration implements ConfigurationInterface
             ->end();
     }
 
-    public function getInvitesNode()
+    public function getInvitesNode(): NodeDefinition
     {
         $treeBuilder = new TreeBuilder('invites');
 

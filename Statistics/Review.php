@@ -3,23 +3,26 @@
 namespace Lens\Bundle\KiyohBundle\Statistics;
 
 use DateTimeImmutable;
+use DateTimeInterface;
+use Symfony\Component\Uid\Uuid;
 
 class Review
 {
-    public $id;
-    public $author;
-    public $city;
-    public $rating;
-    public $questions;
-    public $createdAt;
-    public $updatedAt;
+    public Uuid $id;
+    public string $author;
+    public string $city;
+    public float $rating;
+    public array $questions;
+    public DateTimeInterface $createdAt;
+    public DateTimeInterface $updatedAt;
+    public string $language;
 
     public function __construct(array $response)
     {
-        $this->id = $response['reviewId'];
+        $this->id = Uuid::fromString($response['reviewId']);
         $this->author = $response['reviewAuthor'];
         $this->city = $response['city'];
-        $this->rating = $response['rating'];
+        $this->rating = (float)$response['rating'];
 
         $this->questions = array_map(function ($question) {
             return new Question($question);
@@ -31,5 +34,6 @@ class Review
 
         $this->createdAt = new DateTimeImmutable($response['dateSince']);
         $this->updatedAt = new DateTimeImmutable($response['updatedSince']);
+        $this->language = strtolower($response['reviewLanguage']);
     }
 }
