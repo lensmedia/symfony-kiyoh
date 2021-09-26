@@ -28,9 +28,11 @@ class UpdateKiyohStatisticsCommand extends Command
         $statistics = $this->statisticsRequest->statisticsCacheItem()->get();
         if ($statistics instanceof Statistics) {
             $output->writeln(sprintf(
-                'Currently rated %s with %s votes.',
+                'Currently rated %.1f with %d votes (recently rated %.1f with %d votes).',
                 $statistics->rating,
-                $statistics->votes
+                $statistics->votes,
+                $statistics->recentRating,
+                $statistics->recentVotes
             ));
         }
 
