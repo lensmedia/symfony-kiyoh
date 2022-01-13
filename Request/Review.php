@@ -1,6 +1,6 @@
 <?php
 
-namespace Lens\Bundle\KiyohBundle\Statistics;
+namespace Lens\Bundle\KiyohBundle\Request;
 
 use DateTimeImmutable;
 use DateTimeInterface;

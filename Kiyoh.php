@@ -4,7 +4,8 @@ namespace Lens\Bundle\KiyohBundle;
 
 use Lens\Bundle\KiyohBundle\Inviter\Inviter;
 use Lens\Bundle\KiyohBundle\Inviter\RequestContent;
-use Lens\Bundle\KiyohBundle\Statistics\Statistics;
+use Lens\Bundle\KiyohBundle\Request\Reviews;
+use Lens\Bundle\KiyohBundle\Request\Statistics;
 use Lens\Bundle\KiyohBundle\Statistics\StatisticsRequest;
 
 /**
@@ -14,27 +15,21 @@ use Lens\Bundle\KiyohBundle\Statistics\StatisticsRequest;
  */
 class Kiyoh
 {
-    private $statisticsRequest;
-    private $inviter;
-
-    public function __construct(StatisticsRequest $statisticsRequest, Inviter $inviter)
-    {
-        $this->statisticsRequest = $statisticsRequest;
-        $this->inviter = $inviter;
+    public function __construct(
+        private Statistics $statistics,
+        private Reviews $reviews,
+        private Inviter $inviter,
+    ) {
     }
 
-    public function statistics(): ?Statistics
+    public function statistics(?string $locationName = null): ?Statistics
     {
-        return $this->statisticsRequest
-            ->statisticsCacheItem()
-            ->get();
+        return $this->statistics($locationName);
     }
 
-    public function reviews(): array
+    public function reviews(?string $locationName = null): array
     {
-        return $this->statisticsRequest
-            ->reviewsCacheItem()
-            ->get() ?? [];
+        return []; // $this->statisticsRequest($locationName);
     }
 
     public function invite(string $email, string $name = null, string $reference = null, string $locale = null): RequestContent

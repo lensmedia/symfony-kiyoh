@@ -3,7 +3,8 @@
 namespace Lens\Bundle\KiyohBundle\DependencyInjection;
 
 use Lens\Bundle\KiyohBundle\Inviter\Inviter;
-use Lens\Bundle\KiyohBundle\Statistics\StatisticsRequest;
+use Lens\Bundle\KiyohBundle\Request\Reviews;
+use Lens\Bundle\KiyohBundle\Request\Statistics;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -23,10 +24,19 @@ class LensKiyohExtension extends Extension
 
         $loader->load('services.php');
 
-        $container->getDefinition(Inviter::class)
-            ->replaceArgument(2, $config);
+        // Remap default location onto other locations.
+        $locations = $config['locations'];
+        if (isset($locations['_defaults'])) {
+            $defaultLocation = $locations['_defaults'];
+            unset($locations['_defaults']);
 
-        $container->getDefinition(StatisticsRequest::class)
-            ->replaceArgument(2, $config);
+            $config['locations'] = array_map(function ($item) use ($defaultLocation) {
+                return array_replace_recursive($defaultLocation, $item);
+            }, $locations);
+        }
+
+        $container->getDefinition(Inviter::class)->replaceArgument(2, $config);
+        $container->getDefinition(Statistics::class)->replaceArgument(2, $config);
+        $container->getDefinition(Reviews::class)->replaceArgument(2, $config);
     }
 }

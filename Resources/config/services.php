@@ -2,23 +2,21 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Lens\Bundle\KiyohBundle\KiyohCacheWarmer;
-use Lens\Bundle\KiyohBundle\Command\UpdateKiyohStatisticsCommand;
 use Lens\Bundle\KiyohBundle\Inviter\Inviter;
 use Lens\Bundle\KiyohBundle\Kiyoh;
-use Lens\Bundle\KiyohBundle\Statistics\StatisticsRequest;
+use Lens\Bundle\KiyohBundle\Request\Reviews;
+use Lens\Bundle\KiyohBundle\Request\Statistics;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 return static function (ContainerConfigurator $container) {
     $container->services()
-        ->set(KiyohCacheWarmer::class)
-        ->args([
-            service(KernelInterface::class),
-        ])
-        ->tag('kernel.cache_warmer')
+//        ->set(KiyohCacheWarmer::class)
+//        ->args([
+//            service(KernelInterface::class),
+//        ])
+//        ->tag('kernel.cache_warmer')
 
         ->set(Inviter::class)
         ->args([
@@ -27,7 +25,14 @@ return static function (ContainerConfigurator $container) {
             [],
         ])
 
-        ->set(StatisticsRequest::class)
+        ->set(Statistics::class)
+        ->args([
+            service(CacheInterface::class),
+            service(HttpClientInterface::class),
+            [],
+        ])
+
+        ->set(Reviews::class)
         ->args([
             service(CacheInterface::class),
             service(HttpClientInterface::class),
@@ -36,14 +41,15 @@ return static function (ContainerConfigurator $container) {
 
         ->set(Kiyoh::class)
         ->args([
-            service(StatisticsRequest::class),
+            service(Statistics::class),
+            service(Reviews::class),
             service(Inviter::class),
         ])
-
-        ->set(UpdateKiyohStatisticsCommand::class)
-        ->args([
-            service(StatisticsRequest::class),
-        ])
-        ->tag('console.command')
+//
+//        ->set(UpdateKiyohStatisticsCommand::class)
+//        ->args([
+//            service(StatisticsRequest::class),
+//        ])
+//        ->tag('console.command')
     ;
 };
