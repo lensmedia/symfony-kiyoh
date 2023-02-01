@@ -2,8 +2,8 @@
 
 namespace Lens\Bundle\KiyohBundle\Statistics;
 
-use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Cache\CacheItemInterface;

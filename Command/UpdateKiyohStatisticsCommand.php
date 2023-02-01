@@ -22,22 +22,24 @@ class UpdateKiyohStatisticsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $timeout = $this->statisticsRequest->update();
+        $this->statisticsRequest->update();
 
         $statistics = $this->statisticsRequest->statisticsCacheItem()->get();
-        if ($statistics instanceof Statistics) {
-            $output->writeln(sprintf(
-                'Currently rated %.1f with %d votes (recently rated %.1f with %d votes).',
-                $statistics->rating,
-                $statistics->votes,
-                $statistics->recentRating,
-                $statistics->recentVotes,
-            ));
+        if (!($statistics instanceof Statistics)) {
+            return Command::FAILURE;
         }
 
         $output->writeln(sprintf(
+            'Currently rated %.1f with %d votes (recently rated %.1f with %d votes).',
+            $statistics->rating,
+            $statistics->votes,
+            $statistics->recentRating,
+            $statistics->recentVotes,
+        ));
+
+        $output->writeln(sprintf(
             'Timeout set for %s',
-            $timeout->format('c'),
+            $this->statisticsRequest->timeoutCacheItem()->get()->format('c'),
         ));
 
         return Command::SUCCESS;
