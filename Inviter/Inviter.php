@@ -4,19 +4,19 @@ namespace Lens\Bundle\KiyohBundle\Inviter;
 
 use DOMDocument;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Inviter
 {
-    const TYPE_XML = 'xml';
-    const TYPE_JSON = 'json';
-    const TYPE_URL = 'url';
+    public const TYPE_XML = 'xml';
+    public const TYPE_JSON = 'json';
+    public const TYPE_URL = 'url';
 
     public function __construct(
-        private HttpClientInterface $http,
-        private LoggerInterface $logger,
-        private array $options
+        private readonly HttpClientInterface $http,
+        private readonly array $options
     ) {
     }
 
@@ -103,6 +103,8 @@ class Inviter
             case self::TYPE_JSON:
                 return json_encode($options, JSON_UNESCAPED_SLASHES);
         }
+
+        return false;
     }
 
     private function getTargetUrl(): string

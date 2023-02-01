@@ -4,21 +4,20 @@ namespace Lens\Bundle\KiyohBundle\Command;
 
 use Lens\Bundle\KiyohBundle\Statistics\Statistics;
 use Lens\Bundle\KiyohBundle\Statistics\StatisticsRequest;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: UpdateKiyohStatisticsCommand::NAME)]
 class UpdateKiyohStatisticsCommand extends Command
 {
-    protected static $defaultName = 'lens:kiyoh:update';
+    public const NAME = 'lens:kiyoh:update';
 
-    private StatisticsRequest $statisticsRequest;
-
-    public function __construct(StatisticsRequest $statisticsRequest)
-    {
+    public function __construct(
+        private readonly StatisticsRequest $statisticsRequest,
+    ) {
         parent::__construct();
-
-        $this->statisticsRequest = $statisticsRequest;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -32,15 +31,15 @@ class UpdateKiyohStatisticsCommand extends Command
                 $statistics->rating,
                 $statistics->votes,
                 $statistics->recentRating,
-                $statistics->recentVotes
+                $statistics->recentVotes,
             ));
         }
 
         $output->writeln(sprintf(
             'Timeout set for %s',
-            $timeout->format('c')
+            $timeout->format('c'),
         ));
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

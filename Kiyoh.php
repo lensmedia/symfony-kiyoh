@@ -14,13 +14,10 @@ use Lens\Bundle\KiyohBundle\Statistics\StatisticsRequest;
  */
 class Kiyoh
 {
-    private $statisticsRequest;
-    private $inviter;
-
-    public function __construct(StatisticsRequest $statisticsRequest, Inviter $inviter)
-    {
-        $this->statisticsRequest = $statisticsRequest;
-        $this->inviter = $inviter;
+    public function __construct(
+        private readonly StatisticsRequest $statisticsRequest,
+        private readonly Inviter $inviter,
+    ) {
     }
 
     public function statistics(): ?Statistics
@@ -37,8 +34,12 @@ class Kiyoh
             ->get() ?? [];
     }
 
-    public function invite(string $email, string $name = null, string $reference = null, string $locale = null): RequestContent
-    {
+    public function invite(
+        string $email,
+        string $name = null,
+        string $reference = null,
+        string $locale = null
+    ): RequestContent {
         return $this->inviter->invite($email, $name, $reference, $locale);
     }
 }

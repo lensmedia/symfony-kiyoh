@@ -5,12 +5,14 @@ namespace Lens\Bundle\KiyohBundle\Statistics;
 class Question
 {
     public string $group;
+
     public string $type;
 
     public string $question;
+
     public bool|int|string $answer;
 
-    public $order;
+    public mixed $order;
 
     public function __construct(array $response)
     {
@@ -20,11 +22,11 @@ class Question
 
         switch ($this->type) {
             case 'int':
-                $this->answer = (int) $response['rating'];
+                $this->answer = (int)$response['rating'];
                 break;
 
             case 'boolean':
-                $this->answer = (bool) $response['rating'];
+                $this->answer = (bool)$response['rating'];
                 break;
 
             default:

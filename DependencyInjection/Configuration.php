@@ -30,8 +30,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->append($this->getStatisticsNode())
                 ->append($this->getInvitesNode())
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }
@@ -40,7 +39,8 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('statistics');
 
-        return $treeBuilder->getRootNode()
+        return $treeBuilder
+            ->getRootNode()
             ->children()
                 ->scalarNode('base_url')
                     ->defaultValue('https://www.kiyoh.com')
@@ -61,7 +61,8 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('invites');
 
-        return $treeBuilder->getRootNode()
+        return $treeBuilder
+            ->getRootNode()
             ->children()
                 ->scalarNode('base_url')
                     ->defaultValue('https://www.klantenvertellen.nl')

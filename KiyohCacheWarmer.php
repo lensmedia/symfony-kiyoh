@@ -3,6 +3,7 @@
 namespace Lens\Bundle\KiyohBundle;
 
 use Exception;
+use Lens\Bundle\KiyohBundle\Command\UpdateKiyohStatisticsCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -11,8 +12,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class KiyohCacheWarmer implements CacheWarmerInterface
 {
-    public function __construct(private KernelInterface $kernel)
-    {
+    public function __construct(
+        private readonly KernelInterface $kernel,
+    ) {
     }
 
     public function isOptional(): bool
@@ -26,12 +28,12 @@ class KiyohCacheWarmer implements CacheWarmerInterface
         $application->setAutoExit(false);
 
         $input = new ArrayInput([
-            'command' => 'lens:kiyoh:update',
+            'command' => UpdateKiyohStatisticsCommand::NAME,
         ]);
 
         try {
             $application->run($input, new NullOutput());
-        } catch(Exception) {
+        } catch (Exception) {
         }
 
         return [];

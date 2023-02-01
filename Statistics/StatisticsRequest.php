@@ -3,69 +3,72 @@
 namespace Lens\Bundle\KiyohBundle\Statistics;
 
 use DateTime;
-use Symfony\Contracts\Cache\CacheInterface;
+use DateTimeImmutable;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\CacheItemInterface;
 
 class StatisticsRequest
 {
-    const CACHE_STATISTICS_INDEX = 'lens_kiyoh.statistics';
-    const CACHE_REVIEW_INDEX = 'lens_kiyoh.reviews';
-    const CACHE_TTL_INDEX = 'lens_kiyoh.ttl';
+    private const CACHE_STATISTICS_INDEX = 'lens_kiyoh.statistics';
+    private const CACHE_REVIEW_INDEX = 'lens_kiyoh.reviews';
+    private const CACHE_TTL_INDEX = 'lens_kiyoh.ttl';
 
     public function __construct(
-        private CacheInterface $cache,
-        private HttpClientInterface $http,
-        private array $options
+        private readonly CacheItemPoolInterface $cache,
+        private readonly HttpClientInterface $http,
+        private readonly array $options,
     ) {
     }
 
-    public function timeoutCacheItem()
+    public function timeoutCacheItem(): CacheItemInterface
     {
         return $this->cache->getItem(self::CACHE_TTL_INDEX.'.'.$this->options['statistics']['hash']);
     }
 
-    public function statisticsCacheItem()
+    public function statisticsCacheItem(): CacheItemInterface
     {
         return $this->cache->getItem(self::CACHE_STATISTICS_INDEX.'.'.$this->options['statistics']['hash']);
     }
 
-    public function reviewsCacheItem()
+    public function reviewsCacheItem(): CacheItemInterface
     {
         return $this->cache->getItem(self::CACHE_REVIEW_INDEX.'.'.$this->options['statistics']['hash']);
     }
 
-    public function update()
+    public function update(): void
     {
-        $hash = $this->options['statistics']['hash'];
-
         // TTL Index is used for rechecking over and over after N seconds.
         $timeout = $this->timeoutCacheItem();
         $statistics = $this->statisticsCacheItem();
         $reviews = $this->reviewsCacheItem();
 
-        if (!$timeout->isHit() || empty($statistics->get())) {
-            // This throws when the query fails, and thus does not
-            // update any cache and the old cache will be returned.
-            $response = $this->query();
-
-            $reviews->set(array_map(function ($review) {
-                return new Review($review);
-            }, isset($response['reviews']) ? $response['reviews'] : []));
-            unset($response['reviews']);
-            $this->cache->save($reviews);
-
-            if (!empty($response)) {
-                $statistics->set(new Statistics($response));
-                $this->cache->save($statistics);
-
-                $expires = new DateTime('+'.$this->options['statistics']['cache_ttl'].' seconds');
-                $timeout->set($expires);
-                $timeout->expiresAt($expires);
-                $this->cache->save($timeout);
-            }
+        // If timeout is still valid, and we have items don't do anything.
+        if ($timeout->isHit() && !empty($statistics->get())) {
+            return;
         }
 
-        return $timeout->get();
+        // This throws when the query fails, and thus does not
+        // update any cache and the old cache will be returned.
+        $response = $this->query();
+        if (empty($response)) {
+            return;
+        }
+
+        $reviews->set(array_map(
+            static fn ($review) => new Review($review),
+            $response['reviews'] ?? [],
+        ));
+
+        $this->cache->save($reviews);
+
+        $statistics->set(new Statistics($response));
+        $this->cache->save($statistics);
+
+        $expires = new DateTimeImmutable('+'.$this->options['statistics']['cache_ttl'].' seconds');
+        $timeout->set($expires);
+        $timeout->expiresAt($expires);
+        $this->cache->save($timeout);
     }
 
     private function query(): array
