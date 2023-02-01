@@ -2,7 +2,7 @@
     "name": "lensmedia/symfony-kiyoh",
     "description": "Kiyoh/ klantenvertellen bundle to handle invite/review queries.",
     "type": "symfony-bundle",
-    "version": "1.3.0",
+    "version": "1.3.1",
     "authors": [
         {
             "name": "Jenne van der Meer",

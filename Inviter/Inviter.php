@@ -3,8 +3,6 @@
 namespace Lens\Bundle\KiyohBundle\Inviter;
 
 use DOMDocument;
-use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

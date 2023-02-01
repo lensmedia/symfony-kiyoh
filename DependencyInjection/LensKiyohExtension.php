@@ -24,7 +24,7 @@ class LensKiyohExtension extends Extension
         $loader->load('services.php');
 
         $container->getDefinition(Inviter::class)
-            ->replaceArgument(2, $config);
+            ->replaceArgument(1, $config);
 
         $container->getDefinition(StatisticsRequest::class)
             ->replaceArgument(2, $config);
